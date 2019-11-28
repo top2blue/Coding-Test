@@ -55,10 +55,8 @@ public class Ex02 {
 	        while(end > start) {
 	    		if (people[end] + people[start] <= limit) {
 	    			start++;
-	    			answer++;
-	    		} else {
-	    			answer++;
 	    		}
+	    		answer++;
 	    		end--;
 	    		System.out.printf("a : %d, s : %d, e : %d\n", answer, start, end);
 	    	}
@@ -66,7 +64,7 @@ public class Ex02 {
 	    	System.out.println(answer + "\n");
 	        return answer;
 	    }
-	    
+	    // 앞에서 부터 계산하면 3번은 통과 않됨
 	    public int solution2(int[] people, int limit) {
 	    	int answer = 1;
 	    	Arrays.sort(people);
