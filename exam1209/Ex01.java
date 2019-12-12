@@ -40,8 +40,10 @@ public class Ex01 {
 		int citations[] = new int[] {3, 0, 6, 1, 5};
 		int answer = 0;
         int len = citations.length;
-		Arrays.sort(citations);
+		Arrays.sort(citations); // 정렬
+		System.out.println(Arrays.toString(citations));
 		for (int i = 0; i < len; i++) {
+			System.out.println(len-i + ", " + citations[i] );
             if (len - i <= citations[i]) {
                 answer = len - i;
                 break;

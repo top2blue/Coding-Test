@@ -57,8 +57,8 @@ face에 해당하는 의상이 crowmask, bluesunglasses, smoky_makeup이므로
 
 public class Ex01 {
 	public static void main(String[] args) {
-		String[][] clothes = new String[][] {{"yellow_hat", "headgear"},{"blue_sunglasses", "eyewear"},{"green_turban", "headgear"}};
-		// String[][] clothes = new String[][] {{"crow_mask", "face"}, {"blue_sunglasses", "face"},{"smoky_makeup", "face"}};
+		// String[][] clothes = new String[][] {{"yellow_hat", "headgear"},{"blue_sunglasses", "eyewear"},{"green_turban", "headgear"}};
+		String[][] clothes = new String[][] {{"crow_mask", "face"}, {"blue_sunglasses", "face"},{"smoky_makeup", "face"}};
 		int answer = 0;
 		HashMap<String, Integer> map = new HashMap<String, Integer>();
 		 
@@ -106,11 +106,13 @@ public class Ex01 {
 	            else
 	            	map.put(clothes[i][1], 1);
 	        }
+	        System.out.println(map);
 	        answer=1;
 	        for (int value : map.values()) {
 	            answer *= (value+1);
 	        }
 	        --answer;	        
+	        System.out.println(answer);
 	        return answer;
 	    }
 	}
