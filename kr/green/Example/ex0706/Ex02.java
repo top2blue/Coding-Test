@@ -1,109 +1,87 @@
 package kr.green.Example.ex0706;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.LinkedList;
-import java.util.Queue;
-
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+
 /*
-다리를 지나는 트럭
-트럭 여러 대가 강을 가로지르는 일 차선 다리를 정해진 순으로 건너려 합니다. 
-모든 트럭이 다리를 건너려면 최소 몇 초가 걸리는지 알아내야 합니다. 
-트럭은 1초에 1만큼 움직이며, 다리 길이는 bridge_length이고 다리는 무게 weight까지 견딥니다.
-※ 트럭이 다리에 완전히 오르지 않은 경우, 이 트럭의 무게는 고려하지 않습니다.
+크레인 인형뽑기 게임
+게임개발자인 죠르디는 크레인 인형뽑기 기계를 모바일 게임으로 만들려고 합니다.
+죠르디는 게임의 재미를 높이기 위해 화면 구성과 규칙을 다음과 같이 게임 로직에 반영하려고 합니다.
 
-예를 들어, 길이가 2이고 10kg 무게를 견디는 다리가 있습니다. 
-무게가 [7, 4, 5, 6]kg인 트럭이 순서대로 최단 시간 안에 다리를 건너려면 다음과 같이 건너야 합니다.
+crane_game_101.png
 
-경과시간		다리를 지난 트럭	다리를 건너는 트럭	대기 트럭
-0				[]					[]					[7,4,5,6]
-1~2				[]					[7]					[4,5,6]
-3				[7]					[4]					[5,6]
-4				[7]					[4,5]				[6]
-5				[7,4]				[5]					[6]
-6~7				[7,4,5]				[6]					[]
-8				[7,4,5,6]			[]					[]
-따라서, 모든 트럭이 다리를 지나려면 최소 8초가 걸립니다.
-solution 함수의 매개변수로 다리 길이 bridge_length, 다리가 견딜 수 있는 무게 weight, 
-트럭별 무게 truck_weights가 주어집니다. 
-이때 모든 트럭이 다리를 건너려면 최소 몇 초가 걸리는지 return 하도록 solution 함수를 완성하세요.
+게임 화면은 1 x 1 크기의 칸들로 이루어진 N x N 크기의 정사각 격자이며 위쪽에는 크레인이 있고
+오른쪽에는 바구니가 있습니다. (위 그림은 5 x 5 크기의 예시입니다). 
+각 격자 칸에는 다양한 인형이 들어 있으며 인형이 없는 칸은 빈칸입니다. 
+모든 인형은 1 x 1 크기의 격자 한 칸을 차지하며 격자의 가장 아래 칸부터 차곡차곡 쌓여 있습니다. 게임 사용자는 크레인을 좌우로 움직여서 멈춘 위치에서 가장 위에 있는 인형을 집어 올릴 수 있습니다. 집어 올린 인형은 바구니에 쌓이게 되는 데, 이때 바구니의 가장 아래 칸부터 인형이 순서대로 쌓이게 됩니다. 다음 그림은 [1번, 5번, 3번] 위치에서 순서대로 인형을 집어 올려 바구니에 담은 모습입니다.
 
-제한 조건
-bridge_length는 1 이상 10,000 이하입니다.
-weight는 1 이상 10,000 이하입니다.
-truck_weights의 길이는 1 이상 10,000 이하입니다.
-모든 트럭의 무게는 1 이상 weight 이하입니다.
+crane_game_102.png
 
+만약 같은 모양의 인형 두 개가 바구니에 연속해서 쌓이게 되면 두 인형은 터뜨려지면서 
+바구니에서 사라지게 됩니다. 위 상태에서 이어서 [5번] 위치에서 인형을 집어 바구니에 
+쌓으면 같은 모양 인형 두 개가 없어집니다.
+
+crane_game_103.gif
+
+크레인 작동 시 인형이 집어지지 않는 경우는 없으나 만약 인형이 없는 곳에서 크레인을 
+작동시키는 경우에는 아무런 일도 일어나지 않습니다. 또한 바구니는 모든 인형이 들어갈 
+수 있을 만큼 충분히 크다고 가정합니다. (그림에서는 화면표시 제약으로 5칸만으로 표현하였음)
+
+게임 화면의 격자의 상태가 담긴 2차원 배열 board와 인형을 집기 위해 크레인을 작동시킨 
+위치가 담긴 배열 moves가 매개변수로 주어질 때, 크레인을 모두 작동시킨 후 터트려져 사라진 
+인형의 개수를 return 하도록 solution 함수를 완성해주세요.
+
+[제한사항]
+board 배열은 2차원 배열로 크기는 5 x 5 이상 30 x 30 이하입니다.
+board의 각 칸에는 0 이상 100 이하인 정수가 담겨있습니다.
+0은 빈 칸을 나타냅니다.
+1 ~ 100의 각 숫자는 각기 다른 인형의 모양을 의미하며 같은 숫자는 같은 모양의 인형을 나타냅니다.
+moves 배열의 크기는 1 이상 1,000 이하입니다.
+moves 배열 각 원소들의 값은 1 이상이며 board 배열의 가로 크기 이하인 자연수입니다.
 입출력 예
-bridge_length	weight	truck_weights						return
-2				10		[7,4,5,6]							8
-100				100		[10]								101
-100				100		[10,10,10,10,10,10,10,10,10,10]		110
- */
+board															moves				result
+[[0,0,0,0,0],[0,0,1,0,3],[0,2,5,0,1],[4,2,4,4,2],[3,5,1,3,1]]	[1,5,3,5,1,2,1,4]	4
+*/
+import java.util.Stack;
+
 public class Ex02 {
 	@Test
 	public void test() {
 		Solution solution = new Solution();
-		assertEquals(solution.solution(2, 10, new int[] {7,4,5,6}), 8);
-		assertEquals(solution.solution(100, 100, new int[] {10}), 101);
-		assertEquals(solution.solution(100, 100, new int[] {10,10,10,10,10,10,10,10,10,10}), 110);
-		assertEquals(solution.solution(2,   4, new int[] {1,2,1,2}), 6);
-	}
-	class Solution {
-	    public int solution(int bridge_length, int weight, int[] truck_weights) {
-	    	int answer = 0;
-	        Queue<Integer> queue = new LinkedList<>();
-	        int max = 0;
-	        for(int w : truck_weights) {
-	            while(true) {
-	                if(queue.isEmpty()) {
-	                	queue.offer(w);
-	                    max += w;
-	                    answer++;
-	                    break;
-	                } else if(queue.size() == bridge_length) {
-	                    max -= queue.poll();
-	                } else {
-	                    if( max + w > weight) {
-	                    	queue.offer(0);
-	                        answer++;
-	                    } else {
-	                    	queue.offer(w);
-	                        max += w;
-	                        answer++;
-	                        break;
-	                    }
-	                }
-	            } 
-	        }
-	        return answer + bridge_length;
-	    }
-	    
-	    public int solution2(int bridge_length, int weight, int[] truck_weights) {
-	        int answer = 0;
-	    	int[] endTime = new int[truck_weights.length];
-		    Queue<Integer> onBridge = new LinkedList<Integer>();
-	        int cur=0; // 현재 트럭의 위치
-	        while(true) {
-	        	// 트럭이 다리를 다 지났으면, queue 크기는 다리 길이와 동일하므로 
-	        	// queue에서 꺼내 최대 무게에서 빼준다.
-	            if(!onBridge.isEmpty() && endTime[onBridge.peek()] == answer) {
-	                weight += truck_weights[onBridge.poll()]; // 큐에서 꺼내 무게 증가
-	            }
-	            // 현재 위치가 끝이 아니면서 트럭의 무게가 무게를 초과하지 않는다면
-	            if(cur < truck_weights.length && truck_weights[cur] <= weight) {
-	                onBridge.offer(cur); // 다리에 진입한다.
-	                endTime[cur] = answer + bridge_length; // 현재 시간에 다리의 길이를 더해서 넣는다.
-	                weight -= truck_weights[cur]; // 무게는 빼준다.
-	                cur++; // 다음 트럭으로
-	            }
-	            answer++; // 시간 증가 
-	            if(onBridge.isEmpty()) break; // 다리위에 아무것도 없으면 종료
-	        }
-	        return answer;
-	    }
+		assertEquals(solution.solution(new int[][] { { 0, 0, 0, 0, 0 }, { 0, 0, 1, 0, 3 }, { 0, 2, 5, 0, 1 },
+				{ 4, 2, 4, 4, 2 }, { 3, 5, 1, 3, 1 } }, new int[] { 1, 5, 3, 5, 1, 2, 1, 4 }), 4);
 	}
 
+	class Solution {
+		public int solution(int[][] board, int[] moves) {
+			int answer = 0;
+			Stack<Integer> s = new Stack<Integer>();
+			for (int i = 0; i < moves.length; i++) {
+				for (int j = 0; j < board.length; j++) {
+					/*
+					 * 해당 칸에 인형이 존재하는경우 ↓ 아래로 내려가므로 행의 값이 계속 바껴야함 (0,0), (1,0), (2,0) ... moves배열에
+					 * 있는 요소를 board[][] 배열의 '열' 값에 넣어서 비교 배열의 인덱스는 0부터 시작하므로 -1
+					 */
+					if (board[j][moves[i] - 1] != 0) {
+						// 스택이 비어있는경우 -> 해당 인형 넣기
+						if (s.isEmpty()) s.push(board[j][moves[i] - 1]);
+						// 스택이 비어있지 않는경우 -> 인형이 동일한지 아닌지 비교
+						else {
+							if (s.peek() == board[j][moves[i] - 1]) { // 인형이 동일하면 제거 후 사라진 인형개수 +2
+								s.pop();
+								answer += 2;
+							}else {// 인형이 동일하지 않으면 스택에 인형 넣기
+								s.push(board[j][moves[i] - 1]);
+							}
+						}
+						// 해당 작업 끝난 후에는 인형을 빼냈으므로 0으로 만든다.(인형이 없다는 표시)
+						board[j][moves[i] - 1] = 0;
+						break;
+					}
+				}
+			}
+			return answer;
+		}
+	}
 }
